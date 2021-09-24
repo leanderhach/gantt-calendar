@@ -1,0 +1,138 @@
+// import bulma
+@import '~bulma';
+
+// import vue-select styles
+@import "vue-select/src/scss/vue-select.scss";
+
+
+// import fonts
+@font-face {
+    font-family: 'Ubuntu';
+    font-weight: 600;
+    src: url('../fonts/Ubuntu-Medium.ttf') format('truetype');
+
+}
+
+@font-face {
+    font-family: 'Ubuntu';
+    font-weight: 400;
+    src: url('../fonts/Ubuntu-Regular.ttf') format('truetype');
+}
+
+@font-face{
+    font-family: 'Ubuntu';
+    font-weight: 700;
+    src: url('../fonts/Ubuntu-Bold.ttf') format('truetype');
+}
+// variables
+:root{
+
+    // gray
+    --gray-50: #e2e3e4;
+    --gray-100: #d5d7d9;
+    --gray-300: #595d68;
+    --gray-500: #2f3542;
+    --gray-700: #1c2028;
+    --gray-900: #090b0d;
+
+    // red
+    --red-300: #ff6c79;
+    --red-500: #ff4757;
+
+    //white
+    --white: #ffffff;
+
+    // Calendar Item colors
+    --bruschetta: #ff6348;
+    --orange: #ffa502;
+    --watermelon: #ff4757;
+    --electric: #3742fa;
+    --alien: #2ed573;
+    --sunrise: #eccc68;
+    --stormcloud: #2f3542;
+    --lime: #7bed9f;
+    --sky: #70a1ff;
+
+
+}
+
+html, body{
+    height:100%;
+    font-size:16px;
+    font-family: 'Ubuntu';
+    color: var(--gray-700);
+}
+
+.clickable{
+    cursor: pointer;
+}
+
+button.icon-button{
+    border:none;
+    background-color:transparent;
+    color:var(--gray-500);
+    font-family: inherit;
+    border-radius:50%;
+    transition: background-color .13s ease;
+    cursor:pointer;
+    height:1.33rem;
+    width:1.33rem;
+
+
+    &:hover{
+        background-color:var(--gray-100);
+    }
+}
+
+button.is-brand, div.is-brand{
+    background-color:var(--red-500);
+    color:var(--white);
+
+    &:hover, &:focus{
+        color:var(--white);
+    }
+}
+
+// form input styling
+textarea{
+    padding: 0.75rem;
+    resize: none;
+    border:none;
+    background-color:var(--gray-50);
+    font-size:14px;
+    border-radius:10px;
+    position:relative;
+    width:100%;
+
+    &::after{
+        position:absolute;
+        height:2px;
+        content: '';
+        width:100%;
+        bottom:0;
+        left:0;
+        background-color:red;
+    }
+
+    &:focus{
+        outline: none;
+        border: none;
+    }
+}
+
+.textarea-container{
+    height: max-content;
+    width: max-content;
+    position: relative;
+    width: 100%;
+}
+
+.textarea-underline{
+    height: 2px;
+    width: 100%;
+    bottom: 10px;
+    background-color: var(--red-300);
+    position: absolute;
+    border-radius: 20px;
+}
+
