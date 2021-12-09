@@ -7,12 +7,20 @@
     }"
   >
     <div class="day__title">{{ label }}</div>
-    <div class="day__events"></div>
+    <div class="day__events">
+      <div :class="['event', {'event__on-now': event.time && event.time.onNow === true}]" v-for="(event, key) in storedEvents.slice(1)" :key="key">
+        <p class="event__title">{{ event.title }}</p>
+        <p v-if="event.time" class="event__time">{{ event.time.start }} - {{ event.time.end }} {{ event.time.duration }}</p>
+        <p v-else class="event__time">All Day</p>
+      </div>
+      <button @click="ShowDayEvents" v-if="storedEvents.length > 2" class="events__see-all">And {{ storedEvents.length - 2 }} More</button>
+    </div>
   </div>
 </template>
 
 <script>
 import dayjs from 'dayjs';
+import store from '../../store';
 
 export default {
   name: 'CalendarMonthDayItem',
@@ -39,6 +47,60 @@ export default {
     label() {
       return dayjs(this.day.date).format('D');
     },
+
+    storedEvents() {
+      if (this.day.isCurrentMonth) {
+        const res = [];
+
+        console.log(store.state.calendarEvents); // eslint-disable-line
+
+        for (let i = 0; i < store.state.calendarEvents.length; i += 1) {
+          const event = store.state.calendarEvents[i];
+          let eventIsToday = false;
+
+          // calculate if the event is on today
+          if (event.start.date) {
+            if ((dayjs(this.day.date).diff(dayjs(dayjs(event.start.date).format('YYYY-MM-DD')), 'day') === 0) &&
+              (dayjs(this.day.date).diff(dayjs(dayjs(event.end.date).format('YYYY-MM-DD')), 'day') <= 0)
+            ) {
+              eventIsToday = true;
+            }
+          } else if (event.start.dateTime) {
+            if ((dayjs(this.day.date).diff(dayjs(dayjs(event.start.dateTime).format('YYYY-MM-DD')), 'day') === 0) &&
+                 (dayjs(this.day.date).diff(dayjs(dayjs(event.end.dateTime).format('YYYY-MM-DD')), 'day') <= 0)) {
+              eventIsToday = true;
+            }
+          }
+
+          if (eventIsToday) {
+            const newEvent = {
+              title: event.summary,
+              difference: eventIsToday,
+              description: event.description,
+            };
+
+            if (event.start.dateTime) {
+              newEvent.time = {};
+
+              newEvent.time.start = dayjs(event.start.dateTime).format('hh:mma');
+              newEvent.time.end = dayjs(event.end.dateTime).format('hh:mma');
+
+
+              const currentTimeAfterStart = dayjs().diff(event.start.dateTime, 'minute');
+              const currentTimeBeforeEnd = dayjs().diff(event.end.dateTime, 'minute');
+
+              newEvent.time.onNow = currentTimeAfterStart >= 0 && currentTimeBeforeEnd <= 0;
+            }
+
+            res.push(newEvent);
+          }
+        }
+
+        return res;
+      }
+
+      return [];
+    },
   },
 };
 </script>
@@ -54,9 +116,10 @@ export default {
             width: max-content;
             padding: 5px 10px;
             border-radius: 50%;
+            font-size:1.2rem;
             font-weight: 600;
             color:var(--gray-300);
-            font-family: 'Ubuntu', sans-serif;
+            font-family: 'Roboto Condensed', sans-serif;
         }
 
         &__events{
@@ -65,40 +128,56 @@ export default {
         }
     }
 
+    .events{
+      &__see-all{
+        border:none;
+        outline:none;
+        background:transparent;
+        text-align: left;
+        color:var(--gray-300);
+        font-weight:bold;
+        text-decoration: underline;
+        margin-top:1rem;
+        cursor:pointer;
+        font-family: 'Roboto Condensed', sans-serif;
+      }
+    }
+
+    .event {
+      &__title{
+        font-weight:bold;
+      }
+
+      &__time{
+        color:var(--gray-300);
+      }
+
+      &__on-now{
+        color:var(--red-300);
+      }
+    }
+
     .calendar__day{
         min-height:150px;
         font-size:1rem;
         position:relative;
-        border-left:0.5px solid var(--gray-100);
-        border-bottom:0.5px solid var(--gray-100);
-
-        &:nth-of-type(-n+7){
-            border-top:0.5px solid var(--gray-100);
-        }
-
-        &::after{
-            position:absolute;
-            height:100%;
-            width:100%;
-            background-color:var(--gray-100);
-            opacity:0.4;
-            display:none;
-            content: '';
-            top:0;
-            left:0;
-        }
+        border-top:2px solid var(--gray-300);
+        margin:5px 10px;
 
         &--today{
-            .day__title{
-                background-color:var(--red-500);
-                color:white;
-            }
+          border-top:2px solid var(--red-500);
+
+          > .day__title{
+            color:var(--red-500);
+          }
         }
 
         &--not-current{
-            &::after{
-                display:block;
-            }
+          border-color:var(--gray-100);
+
+          > .day__title{
+            color:var(--gray-100);
+          }
         }
     }
 </style>

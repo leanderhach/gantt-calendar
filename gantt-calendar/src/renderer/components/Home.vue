@@ -4,6 +4,7 @@
       <div class="calendar__header">
         <calendar-date-indicator :selectedDate="selectedDate"></calendar-date-indicator>
         <calendar-date-selector :selectedDate="selectedDate" :currentDate="today" v-on:dateSelected="selectDate"></calendar-date-selector>
+        <create-event></create-event>
       </div>
 
       <calendar-weekdays class="week-days"></calendar-weekdays>
@@ -27,6 +28,7 @@ import CalendarDateIndicator from '@/components/partials/CalendarDateIndicator';
 import CalendarDateSelector from '@/components/partials/CalendarDateSelector';
 import CalendarWeekdays from '@/components/partials/CalendarWeekdays';
 import CalendarMonthDayItem from '@/components/partials/CalendarMonthDayItem';
+import CreateEvent from '@/components/createEvent';
 
 dayjs.extend(weekday);
 dayjs.extend(weekOfYear);
@@ -37,6 +39,7 @@ export default {
     CalendarDateSelector,
     CalendarWeekdays,
     CalendarMonthDayItem,
+    CreateEvent,
   },
 
   data() {
@@ -141,6 +144,5 @@ export default {
     .calendar__header{
       display:flex;
       flex-direction:row;
-      justify-content:space-between;
     }
 </style>

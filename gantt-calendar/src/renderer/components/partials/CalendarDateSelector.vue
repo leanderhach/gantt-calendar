@@ -1,7 +1,7 @@
 <template>
   <div class="calendar-date-selector">
     <span class="clickable" @click="selectPrevious"><font-awesome-icon icon="chevron-left"></font-awesome-icon></span>
-    <button class="button" @click="selectCurrent">Today</button>
+    <button class="button" @click="selectCurrent"><font-awesome-icon icon="circle"></font-awesome-icon></button>
     <span class="clickable" @click="selectNext"><font-awesome-icon icon="chevron-right"></font-awesome-icon></span>
   </div>
 </template>
@@ -43,19 +43,27 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
     .calendar-date-selector{
         display:flex;
         flex-direction:row;
         margin-right:20px;
-
-        button.button{
-            margin:0 10px;
-        }
+        align-items: center;
     }
 
     span.clickable{
         display:flex;
         align-items: center;
+        padding:0 5px;
+    }
+    .button{
+      outline:none;
+      border:none;
+      padding:0 5px;
+      
+      svg {
+        width:.6rem;
+        height:.6rem;
+      }
     }
 </style>

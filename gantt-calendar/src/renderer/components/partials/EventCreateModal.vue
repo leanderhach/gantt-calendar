@@ -106,6 +106,8 @@ export default {
   data() {
     return {
       templateEvent: {
+        title: '',
+        description: '',
         date: dayjs().format('YYYY-MM-DD'),
         start: dayjs().format('hh:mma'),
         end: dayjs().add(1, 'hour').format('hh:mma'),
@@ -113,6 +115,8 @@ export default {
         eventType: '',
       },
       newEvent: {
+        title: '',
+        description: '',
         date: dayjs().format('YYYY-MM-DD'),
         start: dayjs().format('hh:mma'),
         end: dayjs().add(1, 'hour').format('hh:mma'),

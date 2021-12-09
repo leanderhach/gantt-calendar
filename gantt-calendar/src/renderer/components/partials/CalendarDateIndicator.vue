@@ -39,7 +39,7 @@ export default {
 
   computed: {
     selectedMonth() {
-      return this.selectedDate.format('MMMM');
+      return this.selectedDate.format('MMM');
     },
     selectedYear() {
       return this.selectedDate.format('YYYY');
@@ -55,7 +55,7 @@ export default {
 
 <style lang="scss">
     .calendar-date-indicator{
-        font-weight:700;
+        font-weight:black;
         font-size:2rem;
         display:flex;
         flex-direction:row;

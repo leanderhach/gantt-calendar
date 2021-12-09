@@ -1,19 +1,5 @@
 <template>
     <aside class="sidebar-menu">
-        <div class="sidebar-menu__title">
-            <h1>Looking Glass</h1>
-        </div>
-        <div class="sidebar-menu__buttons">
-            <button class="icon-button"><font-awesome-icon icon="cog"></font-awesome-icon></button>
-            <button class="icon-button"><font-awesome-icon icon="search"></font-awesome-icon></button>
-        </div>
-        <div class="sidebar-menu__calendars">
-
-        </div>
-        <div class="sidebar-menu__action">
-            <button class="attention-button" @click="toggleEventCreate">Create <font-awesome-icon icon="plus"></font-awesome-icon></button>
-        </div>
-        <event-create-modal v-if="creatingEvent" v-on:close:modal="toggleEventCreate" v-on:create:event="createEvent"></event-create-modal>
     </aside>
 </template>
 
@@ -37,9 +23,9 @@ export default {
       this.creatingEvent = !this.creatingEvent;
     },
 
-    createEvent(event) {
-      console.log(event);
-    },
+    // createEvent(event) {
+    //   //console.log(event);
+    // },
 
   },
 };
@@ -47,7 +33,7 @@ export default {
 
 <style lang="scss">
     .sidebar-menu{
-        width:20%;
+        width:5%;
         max-width:500px;
         height:100%;
         display:flex;

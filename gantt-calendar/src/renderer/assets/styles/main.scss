@@ -7,22 +7,28 @@
 
 // import fonts
 @font-face {
-    font-family: 'Ubuntu';
-    font-weight: 600;
-    src: url('../fonts/Ubuntu-Medium.ttf') format('truetype');
-
-}
-
-@font-face {
-    font-family: 'Ubuntu';
+    font-family: 'Roboto Condensed';
     font-weight: 400;
-    src: url('../fonts/Ubuntu-Regular.ttf') format('truetype');
+    src: url('../fonts/RobotoCondensed-Regular.ttf') format('truetype');
+
 }
 
 @font-face{
-    font-family: 'Ubuntu';
+    font-family: 'Roboto Condensed';
     font-weight: 700;
-    src: url('../fonts/Ubuntu-Bold.ttf') format('truetype');
+    src: url('../fonts/RobotoCondensed-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Readex';
+    font-weight: 400;
+    src: url('../fonts/ReadexPro-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Readex';
+    font-weight: 700;
+    src: url('../fonts/ReadexPro-Bold.ttf') format('truetype');
 }
 // variables
 :root{
@@ -36,6 +42,7 @@
     --gray-900: #090b0d;
 
     // red
+    --red-100: #FFA3AB;
     --red-300: #ff6c79;
     --red-500: #ff4757;
 
@@ -59,7 +66,7 @@
 html, body{
     height:100%;
     font-size:16px;
-    font-family: 'Ubuntu';
+    font-family: 'Roboto Condensed';
     color: var(--gray-700);
 }
 
@@ -77,7 +84,6 @@ button.icon-button{
     cursor:pointer;
     height:1.33rem;
     width:1.33rem;
-
 
     &:hover{
         background-color:var(--gray-100);
