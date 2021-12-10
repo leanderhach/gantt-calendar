@@ -6,14 +6,14 @@
       'calendar__day--today': isToday
     }"
   >
-    <div class="day__title">{{ label }}</div>
+    <div class="day__title" @click="showDay">{{ label }}</div>
     <div class="day__events">
-      <div :class="['event', {'event__on-now': event.time && event.time.onNow === true}]" v-for="(event, key) in storedEvents.slice(1)" :key="key">
+      <div :class="['event', {'event__on-now': event.time && event.time.onNow === true}]" v-for="(event, key) in storedEvents" :key="key">
         <p class="event__title">{{ event.title }}</p>
         <p v-if="event.time" class="event__time">{{ event.time.start }} - {{ event.time.end }} {{ event.time.duration }}</p>
         <p v-else class="event__time">All Day</p>
       </div>
-      <button @click="ShowDayEvents" v-if="storedEvents.length > 2" class="events__see-all">And {{ storedEvents.length - 2 }} More</button>
+      <button @click="showDay" v-if="storedEvents.length > 2" class="events__see-all">And {{ storedEvents.length - 2 }} More</button>
     </div>
   </div>
 </template>
@@ -39,15 +39,20 @@ export default {
 
   data() {
     return {
-      isCreatingEvent: false,
+      isShowingDay: false,
     };
+  },
+
+  methods: {
+    showDay() {
+      this.isShowingDay = !this.isShowingDay;
+    },
   },
 
   computed: {
     label() {
       return dayjs(this.day.date).format('D');
     },
-
     storedEvents() {
       if (this.day.isCurrentMonth) {
         const res = [];
@@ -60,8 +65,8 @@ export default {
 
           // calculate if the event is on today
           if (event.start.date) {
-            if ((dayjs(this.day.date).diff(dayjs(dayjs(event.start.date).format('YYYY-MM-DD')), 'day') === 0) &&
-              (dayjs(this.day.date).diff(dayjs(dayjs(event.end.date).format('YYYY-MM-DD')), 'day') <= 0)
+            if (dayjs(this.day.date).diff(dayjs(event.start.date), 'day') === 0 &&
+            dayjs(this.day.date).diff(dayjs(event.end.date), 'day') <= 0
             ) {
               eventIsToday = true;
             }

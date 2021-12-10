@@ -97,7 +97,7 @@ import ButtonSelector from '@/components/partials/ButtonSelector.vue';
 dayjs.extend(customParseFormat);
 
 export default {
-  name: 'EventCreateModal',
+  name: 'Modal',
 
   components: {
     ButtonSelector,

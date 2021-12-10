@@ -4,13 +4,9 @@
 </template>
 
 <script>
-import EventCreateModal from '@/components/partials/EventCreateModal';
 
 export default {
   name: 'sidebarMenu',
-  components: {
-    EventCreateModal,
-  },
 
   data() {
     return {
