@@ -1,4 +1,7 @@
-import { TinyEmitter } from 'tiny-emitter';
+import Emitter from 'tiny-emitter';
 
 
-export default TinyEmitter();
+const emitter = new Emitter(); // eslint-disable-line
+
+export default emitter;
+

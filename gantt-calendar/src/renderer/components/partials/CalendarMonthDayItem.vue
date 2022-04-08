@@ -8,7 +8,7 @@
   >
     <div class="day__title" @click="showDay">{{ label }}</div>
     <div class="day__events">
-      <div :class="['event', {'event__on-now': event.time && event.time.onNow === true}]" v-for="(event, key) in storedEvents" :key="key">
+      <div :class="['event', {'event__on-now': event.time && event.time.onNow === true}]" v-for="(event, key) in storedEvents" :key="key" @click="viewEvent(event.id)">
         <p class="event__title">{{ event.title }}</p>
         <p v-if="event.time" class="event__time">{{ event.time.start }} - {{ event.time.end }} {{ event.time.duration }}</p>
         <p v-else class="event__time">All Day</p>
@@ -20,6 +20,8 @@
 
 <script>
 import dayjs from 'dayjs';
+import emitter from 'tiny-emitter/instance';
+
 import store from '../../store';
 
 export default {
@@ -46,6 +48,9 @@ export default {
   methods: {
     showDay() {
       this.isShowingDay = !this.isShowingDay;
+    },
+    viewEvent(id) {
+      emitter.emit('viewEvent', id);
     },
   },
 
@@ -79,6 +84,7 @@ export default {
 
           if (eventIsToday) {
             const newEvent = {
+              id: event.id,
               title: event.summary,
               difference: eventIsToday,
               description: event.description,
@@ -130,6 +136,7 @@ export default {
         &__events{
             display:flex;
             flex-direction:column;
+            min-height:calc(25px * 5);
         }
     }
 

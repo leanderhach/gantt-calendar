@@ -9,20 +9,20 @@
 @font-face {
     font-family: 'Roboto Condensed';
     font-weight: 400;
-    src: url('~static/fonts/RobotoCondensed-Regular.ttf') format('truetype');
+    src: url('./assets/fonts/RobotoCondensed-Regular.ttf') format('truetype');
 
 }
 
 @font-face{
     font-family: 'Roboto Condensed';
     font-weight: 700;
-    src: url('~static/fonts/RobotoCondensed-Bold.ttf') format('truetype');
+    src: url('./assets/fonts/RobotoCondensed-Bold.ttf') format('truetype');
 }
 
 @font-face {
     font-family: 'Peace Sans';
     font-weight:400;
-    src: url('~static/fonts/Peace-Sans.otf') format('otf');
+    src: url('./assets/fonts/Peace-Sans.otf') format('truetype');
 }
 // variables
 :root{
@@ -60,7 +60,7 @@
 html, body{
     height:100%;
     font-size:16px;
-    font-family: 'Peace Sans';
+    font-family: 'Roboto Condensed', sans-serif;
     color: var(--gray-700);
 }
 

@@ -1,22 +1,27 @@
 <template>
-    <button class="button event-create" @click="toggleCreateEvent">Create Event</button>
+    <button class="button event-create" @click="createEvent">Create Event</button>
 </template>
 
 <script>
+import emitter from 'tiny-emitter/instance';
+
 export default {
   name: 'CreateEvent',
   methods: {
-    toggleCreateEvent() {
-      return null;
+    createEvent() {
+      emitter.emit('createEvent');
     },
   },
 };
 </script>
 
 <style lang="scss">
-
-.event-create{
+.event-create {
   background-color: var(--red-500);
   color:white;
+  border-radius:0;
+  font-weight: bold;
+  justify-self: flex-end;
+  font-family: 'Roboto Condensed'
 }
 </style>

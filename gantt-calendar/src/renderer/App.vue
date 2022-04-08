@@ -8,7 +8,7 @@
 
 <script>
 import sidebarMenu from '@/components/partials/sidebarMenu.vue';
-import store from './store';
+import listUpcomingEvents from './utils/listUpcomingEvents';
 
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
@@ -27,33 +27,14 @@ export default {
   },
   methods: {
     async login() {
+      console.log('logging in');
       await this.$gapi.login();
-      await this.listUpcomingEvents();
-    },
-    async listUpcomingEvents() {
+
+      console.log('gapi login');
       const gapi = await this.$gapi.getGapiClient();
 
-      gapi.client.calendar.events.list({
-        calendarId: 'primary',
-        timeMin: (new Date()).toISOString(),
-        showDeleted: false,
-        singleEvents: true,
-        maxResults: 100,
-        orderBy: 'startTime',
-      }).then((response) => {
-        const events = response.result.items;
-
-        if (events.length > 0) {
-          for (let i = 0; i < events.length; i += 1) {
-            const event = events[i];
-            let when = event.start.dateTime;
-            if (!when) {
-              when = event.start.date;
-            }
-            store.dispatch('setCalendarEvents', event);
-          }
-        }
-      });
+      console.log(gapi);
+      await listUpcomingEvents(gapi);
     },
   },
   async mounted() {
@@ -63,6 +44,7 @@ export default {
 </script>
 
 <style lang="scss">
+@import './assets/styles/main.scss';
   /* CSS */
   #app{
     min-height:100%;

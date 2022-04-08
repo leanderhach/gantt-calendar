@@ -1,16 +1,5 @@
 <template>
-    <div class="event-create">
-      <div class="event-create__header">
-        <div class="columns">
-          <div class="column">
-          </div>
-          <div class="column">
-            <button @click="closeModal" class="icon-button">
-              <font-awesome-icon font-awesome-icon icon="times"></font-awesome-icon>
-            </button>
-          </div>
-        </div>
-      </div>
+    <div class="">
         <div class="event-create__title">
             <div class="form-group form-group__title">
                 <input type="text" id="eventName" placeholder=" " v-model="newEvent.title">
@@ -177,40 +166,6 @@ export default {
 </script>
 
 <style lang="scss">
-    .event-create{
-        position:absolute;
-        top:10px;
-        left:10px;
-        background-color:white;
-        border-radius:10px;
-        padding:15px 30px 30px 30px;
-        z-index:5;
-        min-width:420px;
-        box-shadow: -2px -3px 22px -2px rgba(128,128,128,0.75);
-
-        &__body{
-            margin-top:2rem;
-        }
-
-        &__header{
-          margin-bottom:1rem;
-
-          .column:nth-child(2){
-            display:flex;
-            flex-direction:row;
-            justify-content: flex-end;
-          }
-        }
-
-        &__actions{
-          .column:nth-child(2){
-            display:flex;
-            flex-direction:row;
-            justify-content: flex-end;
-          }
-        }
-    }
-
     .form-group{
         position: relative;
 

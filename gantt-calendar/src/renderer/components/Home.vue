@@ -17,6 +17,7 @@
         ></calendar-month-day-item>
       </div>
     </div>
+    <multi-function-overlay></multi-function-overlay>
   </main>
 </template>
 
@@ -29,6 +30,7 @@ import CalendarDateSelector from '@/components/partials/CalendarDateSelector';
 import CalendarWeekdays from '@/components/partials/CalendarWeekdays';
 import CalendarMonthDayItem from '@/components/partials/CalendarMonthDayItem';
 import CreateEvent from '@/components/createEvent';
+import MultiFunctionOverlay from '@/components/MultiFunctionOverlay';
 
 dayjs.extend(weekday);
 dayjs.extend(weekOfYear);
@@ -40,8 +42,8 @@ export default {
     CalendarWeekdays,
     CalendarMonthDayItem,
     CreateEvent,
+    MultiFunctionOverlay,
   },
-
   data() {
     return {
       selectedDate: dayjs(),
@@ -144,5 +146,6 @@ export default {
     .calendar__header{
       display:flex;
       flex-direction:row;
+      align-items: center;
     }
 </style>

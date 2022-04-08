@@ -5,12 +5,22 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import Vue from 'vue';
 import axios from 'axios';
 import vSelect from 'vue-select';
-import DatePicker from 'v-calendar/lib/components/date-picker.umd';
 import VueGapi from 'vue-gapi';
+import DatePicker from 'v-calendar/lib/components/date-picker.umd';
+import dotenv from 'dotenv';
 
 import App from './App';
 import router from './router';
 import store from './store';
+
+dotenv.config();
+
+Vue.use(VueGapi, {
+  apiKey: process.env.API_KEY,
+  clientId: process.env.CLIENT_ID,
+  discoveryDocs: process.env.DISCOVERY_DOCS.split(','),
+  scope: process.env.SCOPE,
+});
 
 library.add([
   faBars,
@@ -36,15 +46,6 @@ Vue.config.productionTip = false;
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.component('v-select', vSelect);
 Vue.component('v-date-picker', DatePicker);
-
-Vue.use(require('@/assets/styles/main.scss'));
-
-Vue.use(VueGapi, {
-  apiKey: 'AIzaSyBZSLLPB6w-zQJH6f_pZmNRKryl74ABkps',
-  clientId: '873283495189-3cjhkp8dvcktgs370idskatgrgbsg06s.apps.googleusercontent.com',
-  discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
-  scope: 'https://www.googleapis.com/auth/calendar.readonly',
-});
 
 /* eslint-disable no-new */
 const app = new Vue({

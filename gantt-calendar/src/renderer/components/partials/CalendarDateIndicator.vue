@@ -59,6 +59,7 @@ export default {
         font-size:2rem;
         display:flex;
         flex-direction:row;
+        font-family: 'Peace Sans', sans-serif !important;
     }
     .heading-input{
       border:none;
