@@ -8,11 +8,13 @@
   >
     <div class="day__title" @click="showDay">{{ label }}</div>
     <div class="day__events">
-      <div :class="['event', {'event__on-now': event.time && event.time.onNow === true}]" v-for="(event, key) in storedEvents" :key="key" @click="viewEvent(event.id)">
-        <p class="event__title">{{ event.title }}</p>
-        <p v-if="event.time" class="event__time">{{ event.time.start }} - {{ event.time.end }} {{ event.time.duration }}</p>
-        <p v-else class="event__time">All Day</p>
-      </div>
+      <template v-for="(event, key) in storedEvents">
+        <div :class="['event', {'event__on-now': event.time && event.time.onNow === true}]"  :key="key" v-if="key < 2" @click="viewEvent(event.id)">
+          <p class="event__title">{{ event.title }}</p>
+          <p v-if="event.time" class="event__time">{{ event.time.start }} - {{ event.time.end }} {{ event.time.duration }}</p>
+          <p v-else class="event__time">All Day</p>
+        </div>
+      </template>
       <button @click="showDay" v-if="storedEvents.length > 2" class="events__see-all">And {{ storedEvents.length - 2 }} More</button>
     </div>
   </div>
@@ -39,18 +41,15 @@ export default {
     },
   },
 
-  data() {
-    return {
-      isShowingDay: false,
-    };
-  },
-
   methods: {
     showDay() {
-      this.isShowingDay = !this.isShowingDay;
+      emitter.emit('viewDay', this.day.date);
     },
     viewEvent(id) {
       emitter.emit('viewEvent', id);
+    },
+    dateFormat(date) {
+      return dayjs(date).format('YYYY-MM-DDTHH:mm:ssZ');
     },
   },
 
@@ -58,51 +57,49 @@ export default {
     label() {
       return dayjs(this.day.date).format('D');
     },
+    today() {
+      return this.dateFormat(this.day.date);
+    },
     storedEvents() {
       if (this.day.isCurrentMonth) {
         const res = [];
-
-        console.log(store.state.calendarEvents); // eslint-disable-line
 
         for (let i = 0; i < store.state.calendarEvents.length; i += 1) {
           const event = store.state.calendarEvents[i];
           let eventIsToday = false;
 
-          // calculate if the event is on today
+          const newEvent = {
+            id: event.id,
+            title: event.summary,
+            difference: eventIsToday,
+            description: event.description,
+            time: {
+              start: null,
+              end: null,
+            },
+          };
+
+          // check if the event is on today
           if (event.start.date) {
-            if (dayjs(this.day.date).diff(dayjs(event.start.date), 'day') === 0 &&
-            dayjs(this.day.date).diff(dayjs(event.end.date), 'day') <= 0
+            if (
+              dayjs(this.today).diff(dayjs(event.start.date)) >= 0 &&
+              dayjs(this.today).add(1, 'day').diff(dayjs(event.end.date)) <= 0
             ) {
+              newEvent.time = false;
               eventIsToday = true;
             }
           } else if (event.start.dateTime) {
-            if ((dayjs(this.day.date).diff(dayjs(dayjs(event.start.dateTime).format('YYYY-MM-DD')), 'day') === 0) &&
-                 (dayjs(this.day.date).diff(dayjs(dayjs(event.end.dateTime).format('YYYY-MM-DD')), 'day') <= 0)) {
+            if (
+              dayjs(this.today).diff(dayjs(event.start.dateTime), 'day') >= 0 &&
+                dayjs(this.today).add(1, 'day').diff(dayjs(event.end.dateTime), 'day') <= 0
+            ) {
+              newEvent.time.start = dayjs(event.start.dateTime).format('HH:mma').replace('00:', '12:');
+              newEvent.time.end = dayjs(event.end.dateTime).format('HH:mma').replace('00:', '12:');
               eventIsToday = true;
             }
           }
 
           if (eventIsToday) {
-            const newEvent = {
-              id: event.id,
-              title: event.summary,
-              difference: eventIsToday,
-              description: event.description,
-            };
-
-            if (event.start.dateTime) {
-              newEvent.time = {};
-
-              newEvent.time.start = dayjs(event.start.dateTime).format('hh:mma');
-              newEvent.time.end = dayjs(event.end.dateTime).format('hh:mma');
-
-
-              const currentTimeAfterStart = dayjs().diff(event.start.dateTime, 'minute');
-              const currentTimeBeforeEnd = dayjs().diff(event.end.dateTime, 'minute');
-
-              newEvent.time.onNow = currentTimeAfterStart >= 0 && currentTimeBeforeEnd <= 0;
-            }
-
             res.push(newEvent);
           }
         }

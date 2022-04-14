@@ -1,73 +1,17 @@
 <template>
-    <div class="">
-        <div class="event-create__title">
-            <div class="form-group form-group__title">
-                <input type="text" id="eventName" placeholder=" " v-model="newEvent.title">
-                <label for="eventName">Title</label>
-            </div>
-        </div>
-        <div class="event-create__body">
-            <h4 class="text is-uppercase has-text-weight-bold">Type</h4>
-            <button-selector :options="['event', 'task', 'reminder']" v-on:selector:update="setEventType"></button-selector>
-            <h4 class="text is-uppercase has-text-weight-bold">When</h4>
-            <div class="date-time-selector">
-                <div class="form-group">
-                    <v-date-picker v-model="newEvent.date">
-                        <template v-slot="{ inputValue, inputEvents }">
-                            <input
-                            :value="inputValue"
-                            v-on="inputEvents"
-                            />
-                        </template>
-                    </v-date-picker>
-                </div>
-                <div v-if="!newEvent.allDay" class="form-group">
-                    <div class="seperator">From</div>
-                    <div class="columns">
-                        <div class="column time-select">
-                            <div class="form-group">
-                                <input type="text" :value="newEvent.start" @blur="updateStart">
-                            </div>
-                        </div>
-                        <div class="seperator">To</div>
-                        <div class="column time-select">
-                            <div class="form-group">
-                                <input type="text" :value="newEvent.end" @blur="updateEnd">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div v-else class="form-group">
-                    <div class="seperator">To</div>
-                    <v-date-picker v-model="newEvent.endDate">
-                        <template v-slot="{ inputValue, inputEvents }">
-                            <input
-                            :value="inputValue"
-                            v-on="inputEvents"
-                            />
-                        </template>
-                    </v-date-picker>
-                </div>
-            </div>
-            <div class="form-group">
-              <checkbox :halfwidth="true" :value="newEvent.allDay" :text="'All Day'" @update="changeAllDay"></checkbox>
-            </div>
-            <template v-if="newEvent.eventType != 'reminder'">
-              <h4 class="text is-uppercase has-text-weight-bold">Description</h4>
-              <div class="form-group">
-                  <textarea name="event description" id="" cols="30" rows="2" v-model="newEvent.description"></textarea>
-              </div>
-            </template>
-        </div>
-        <div class="event-create__actions">
-          <div class="columns">
-            <div class="column"></div>
-            <div class="column">
-              <button class="button is-brand" type="submit" @click="createEvent">Create Event</button>
-            </div>
-          </div>
-        </div>
+  <div class="event-view">
+    {{ event }}
+    <input type="text" class="title display" :value="event['summary']">
+    <div class="columns">
+      <div class="column">
+        <input type="text" :value="start">
+      </div>
+      <div class="column">
+        <input type="text" :value="end">
+      </div>
     </div>
+    <input type="text" class="text display" :value="event.description">
+  </div>
 </template>
 
 <script>
@@ -89,28 +33,10 @@ export default {
     Checkbox,
   },
 
+  props: ['eventId'],
   data() {
     return {
-      templateEvent: {
-        title: '',
-        description: '',
-        date: dayjs().format('YYYY-MM-DD'),
-        start: dayjs().format('hh:mma'),
-        end: dayjs().add(1, 'hour').format('hh:mma'),
-        endDate: dayjs().add(1, 'day').format('YYYY-MM-DD'),
-        allDay: false,
-        eventType: '',
-      },
-      newEvent: {
-        title: '',
-        description: '',
-        date: dayjs().format('YYYY-MM-DD'),
-        start: dayjs().format('hh:mma'),
-        end: dayjs().add(1, 'hour').format('hh:mma'),
-        endDate: dayjs().add(1, 'day').format('YYYY-MM-DD'),
-        allDay: false,
-        eventType: '',
-      },
+      event: {},
     };
   },
 
@@ -127,8 +53,9 @@ export default {
       this.newEvent.start = dayjs(`${this.newEvent.date} ${val}`, 'YYYY-MM-DD hh:mma').format('hh:mma');
     },
 
-    updateEnd(val) {
-      this.newEvent.end = dayjs(`${this.newEvent.date} ${val.target.value}`, 'YYYY-MM-DD hh:mma').format('hh:mma');
+    updateEnd(event) {
+      const val = this.cleanTimeInput(event);
+      this.newEvent.end = dayjs(`${this.newEvent.date} ${val}`, 'YYYY-MM-DD hh:mma').format('hh:mma');
     },
 
     closeModal() {
@@ -200,7 +127,7 @@ export default {
           hour = 0;
 
           if (type === 'end') {
-            event.date = dayjs(event.date).add(1, 'day');
+            event.date = dayjs(event.date).add('day', 1);
           }
         }
       } else if (event[type].includes('pm')) {
@@ -212,11 +139,6 @@ export default {
     },
     cleanTimeInput(event) {
       const input = event.target.value.replace(/\s/g, '');
-
-      if (!input.includes('am') && !input.includes('pm')) {
-        return '12:00am';
-      }
-
       return input;
     },
     changeAllDay() {
@@ -229,6 +151,35 @@ export default {
         this.newEvent.end = dayjs().add(1, 'hour').format('hh:mma');
       }
     },
+  },
+  computed: {
+    start() {
+      return dayjs(this.event.start.dateTime).format('HH:mma');
+    },
+    end() {
+      return dayjs(this.event.end.dateTime).format('HH:mma');
+    },
+  },
+  async mounted() {
+    const gapi = await this.$gapi.getGapiClient();
+
+    const event = await gapi.client.calendar.events.get({
+      calendarId: 'primary',
+      eventId: this.eventId,
+    });
+
+    if (event) {
+      this.event = {
+        summary: event.summary,
+        description: event.description,
+        start: {
+          dateTime: dayjs(event.start.dateTime).format('HH:mma'),
+        },
+        end: {
+          dateTime: dayjs(event.end.dateTime).format('HH:mma'),
+        },
+      };
+    }
   },
 };
 </script>
@@ -280,21 +231,6 @@ export default {
                 font-size: 1.2rem;
             }
         }
-    }
-
-    .date-time-selector{
-      display:flex;
-      flex-direction:row;
-      justify-content: start;
-
-      .form-group{
-        display:flex;
-        flex-direction: row;
-        
-        > .seperator {
-          margin:0 1rem;
-        }
-      }
     }
 
     .time-select{

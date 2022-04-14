@@ -1,5 +1,5 @@
 import { autoUpdater } from 'electron-updater';
-import { app, BrowserWindow } from 'electron' // eslint-disable-line
+import { app, BrowserWindow, Notification } from 'electron' // eslint-disable-line
 import '../renderer/store';
 
 /**
@@ -45,7 +45,14 @@ function createWindow() {
   });
 }
 
-app.on('ready', createWindow);
+const NOTIFICATION_TITLE = 'Basic Notification';
+const NOTIFICATION_BODY = 'Notification from the Main process';
+
+function showNotification() {
+  new Notification({ title: NOTIFICATION_TITLE, body: NOTIFICATION_BODY }).show();
+}
+
+app.whenReady().then(createWindow).then(showNotification);
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

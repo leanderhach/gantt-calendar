@@ -23,22 +23,31 @@ export default {
     return {
       error: '',
       events: [],
+      pollEvent: null,
     };
   },
   methods: {
     async login() {
-      console.log('logging in');
       await this.$gapi.login();
 
-      console.log('gapi login');
-      const gapi = await this.$gapi.getGapiClient();
+      // clear the calendar on starting for the first time
+      this.$store.commit('clearCalendar');
 
-      console.log(gapi);
+      const gapi = await this.$gapi.getGapiClient();
       await listUpcomingEvents(gapi);
+    },
+    pollCurrentEvents() {
+      this.pollEvent = setInterval(() => {
+        this.$store.dispatch('POLL_CURRENT_EVENTS');
+      }, 60000);
     },
   },
   async mounted() {
+    // perform api login
     await this.login();
+
+    // start background task to update time
+    this.pollCurrentEvents();
   },
 };
 </script>

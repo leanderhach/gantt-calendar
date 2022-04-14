@@ -32,3 +32,27 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+  .button{
+    border-radius:0;
+    border: none;
+    border-top:4px solid var(--gray-100);
+    font-family: 'Roboto Condensed', sans-serif;
+    padding:10px 20px 14px 20px;
+    font-weight:bold;
+    color:var(--gray-300);
+
+    &:hover{
+      border-top:4px solid var(--gray-300);
+      color:var(--gray-500);
+    }
+
+    &.is-brand{
+      border-top:4px solid var(--red-500);
+
+      &:hover{
+      }
+    }
+  }
+</style>

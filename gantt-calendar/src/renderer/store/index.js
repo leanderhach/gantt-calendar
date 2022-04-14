@@ -24,6 +24,7 @@ export default new Vuex.Store({
       }
     },
     clearCalendar(state) {
+      console.log('clearing...');
       state.calendarEvents = [];
     },
   },

@@ -1,5 +1,5 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faBars, faChevronLeft, faChevronRight, faChevronDown, faChevronUp, faSearch, faCog, faPlus, faClock, faTimes, faExpandArrowsAlt, faDotCircle, faCircle } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faChevronLeft, faChevronRight, faCheck, faChevronDown, faChevronUp, faSearch, faCog, faPlus, faClock, faTimes, faExpandArrowsAlt, faDotCircle, faCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 import Vue from 'vue';
@@ -36,6 +36,7 @@ library.add([
   faExpandArrowsAlt,
   faDotCircle,
   faCircle,
+  faCheck,
 ]);
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'));
