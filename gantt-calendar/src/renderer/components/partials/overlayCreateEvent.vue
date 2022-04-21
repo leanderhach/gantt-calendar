@@ -7,6 +7,7 @@
             </div>
         </div>
         <div class="event-create__body">
+          {{ JSON.stringify(newEvent) }}
             <h4 class="text is-uppercase has-text-weight-bold">Type</h4>
             <button-selector :options="['event', 'task', 'reminder']" v-on:selector:update="setEventType"></button-selector>
             <h4 class="text is-uppercase has-text-weight-bold">When</h4>
@@ -26,13 +27,13 @@
                     <div class="columns">
                         <div class="column time-select">
                             <div class="form-group">
-                                <input type="text" :value="newEvent.start" @blur="updateStart">
+                                <input type="text" :value="newEvent.start" @change="updateStart">
                             </div>
                         </div>
                         <div class="seperator">To</div>
                         <div class="column time-select">
                             <div class="form-group">
-                                <input type="text" :value="newEvent.end" @blur="updateEnd">
+                                <input type="text" :value="newEvent.end" @change="updateEnd">
                             </div>
                         </div>
                     </div>
@@ -213,9 +214,9 @@ export default {
     cleanTimeInput(event) {
       const input = event.target.value.replace(/\s/g, '');
 
-      if (!input.includes('am') && !input.includes('pm')) {
-        return '12:00am';
-      }
+      // if (!input.includes('am') && !input.includes('pm')) {
+      //   return '12:00am';
+      // }
 
       return input;
     },

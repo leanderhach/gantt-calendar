@@ -38,7 +38,7 @@ export default {
     },
     pollCurrentEvents() {
       this.pollEvent = setInterval(() => {
-        this.$store.dispatch('POLL_CURRENT_EVENTS');
+        // this.$store.dispatch('POLL_CURRENT_EVENTS');
       }, 60000);
     },
   },
