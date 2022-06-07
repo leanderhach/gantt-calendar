@@ -131,21 +131,29 @@ export default {
 </script>
 
 <style lang="scss">
+    .calendar {
+      height:100%;
+      display:flex;
+      flex-direction: column;
+    }
     .days-grid{
       display:grid;
       list-style-type:none;
       grid-template-columns: repeat(7, 1fr);
+      height:100%;
     }
     .week-days{
       display:grid;
       list-style-type: none;
       grid-template-columns: repeat(7, 1fr);
       font-weight:600;
+      height:fit-content;
     }
 
     .calendar__header{
       display:flex;
       flex-direction:row;
       align-items: center;
+      height:fit-content;
     }
 </style>

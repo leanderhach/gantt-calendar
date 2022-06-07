@@ -85,7 +85,7 @@ export default {
         top:0;
         right: -1000px;
         width:40%;
-        margin:5% 0 5% 0;
+        margin:2.5% 0 2.5% 0;
         height:90%;
         background-color:var(--white);
         z-index:1000;

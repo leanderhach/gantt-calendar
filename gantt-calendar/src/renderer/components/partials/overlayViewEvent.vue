@@ -163,20 +163,20 @@ export default {
   async mounted() {
     const gapi = await this.$gapi.getGapiClient();
 
-    const event = await gapi.client.calendar.events.get({
+    const { result } = await gapi.client.calendar.events.get({
       calendarId: 'primary',
       eventId: this.eventId,
     });
 
-    if (event) {
+    if (result) {
       this.event = {
-        summary: event.summary,
-        description: event.description,
+        summary: result.summary,
+        description: result.description,
         start: {
-          dateTime: dayjs(event.start.dateTime).format('HH:mma'),
+          dateTime: dayjs(result.start.dateTime),
         },
         end: {
-          dateTime: dayjs(event.end.dateTime).format('HH:mma'),
+          dateTime: dayjs(result.end.dateTime),
         },
       };
     }
