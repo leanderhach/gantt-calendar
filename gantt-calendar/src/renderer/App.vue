@@ -2,13 +2,14 @@
   <div id="app">
     <sidebar-menu id="menu"></sidebar-menu>
     <router-view id="content"></router-view>
-    {{ error }}
+    <loading-grid v-if="loading"></loading-grid>
   </div>
 </template>
 
 <script>
 import sidebarMenu from '@/components/partials/sidebarMenu.vue';
 import listUpcomingEvents from './utils/listUpcomingEvents';
+import LoadingGrid from './components/partials/loadingGrid.vue';
 
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
@@ -17,6 +18,7 @@ export default {
   name: 'gantt-calendar',
   components: {
     sidebarMenu,
+    LoadingGrid,
   },
 
   data() {
@@ -24,6 +26,7 @@ export default {
       error: '',
       events: [],
       pollEvent: null,
+      loading: true,
     };
   },
   methods: {
@@ -35,6 +38,7 @@ export default {
 
       const gapi = await this.$gapi.getGapiClient();
       await listUpcomingEvents(gapi);
+      this.loading = false;
     },
     pollCurrentEvents() {
       this.pollEvent = setInterval(() => {
@@ -46,6 +50,9 @@ export default {
     // perform api login
     await this.login();
 
+    console.log('ready!');
+    this.loading = false;
+    console.log(this.loading);
     // start background task to update time
     this.pollCurrentEvents();
   },

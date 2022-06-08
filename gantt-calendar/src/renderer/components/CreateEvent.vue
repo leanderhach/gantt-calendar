@@ -1,5 +1,5 @@
 <template>
-    <button class="button event-create" @click="createEvent">Create Event</button>
+    <button class="event-create" @click="createEvent">Create Event</button>
 </template>
 
 <script>
@@ -16,12 +16,17 @@ export default {
 </script>
 
 <style lang="scss">
-.event-create {
-  background-color: var(--red-500);
-  color:white;
-  border-radius:0;
-  font-weight: bold;
-  justify-self: flex-end;
-  font-family: 'Roboto Condensed'
-}
+  .event-create {
+    background-color: var(--red-500);
+    color:white;
+    border-radius:0;
+    font-weight: bold;
+    justify-self: flex-end;
+    font-family: 'Roboto Condensed';
+    border:none;
+    outline:none;
+    padding:1rem 2rem;
+    font-size:1rem;
+    cursor:pointer;
+  }
 </style>

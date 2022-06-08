@@ -1,27 +1,33 @@
 <template>
-  <div class="event-view">
-    {{ event }}
-    <input type="text" class="title display" :value="event['summary']">
-    <div class="columns">
-      <div class="column">
-        <input type="text" :value="start">
-      </div>
-      <div class="column">
-        <input type="text" :value="end">
-      </div>
+  <div :class="['event-view', {'editing': isEditing}]">
+    <h2 class="title">{{ event.summary }}</h2>
+    <div class="row">
+        <p class="text">{{ start }} -</p>
+        <p class="text"> {{ end }}</p>
     </div>
-    <input type="text" class="text display" :value="event.description">
+    <p class="text" v-if="event.description">{{ event.description }}</p>
+    <h4 class="title">Participants</h4>
+    <div class="columns is-multiline">
+      <div class="column is-one-fifth"> {{ event.organizer.email }}</div>
+    </div>
+    <a :href="event.htmlLink" class="link">View on Google Calendar</a>
+
+    <button class="button" @click="deleteEvent">Delete</button>
+    <loading-grid v-if="loading"></loading-grid>
   </div>
 </template>
 
 <script>
 import dayjs from 'dayjs';
+import emitter from 'tiny-emitter/instance';
+
 // eslint-disable-next-line no-unused-vars
 import timezone from 'dayjs/plugin/timezone';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import ButtonSelector from '@/components/partials/ButtonSelector.vue';
 import Checkbox from '@/components/partials/checkbox.vue';
 import listUpcomingEvents from '../../utils/listUpcomingEvents';
+import LoadingGrid from './loadingGrid.vue';
 
 dayjs.extend(customParseFormat);
 
@@ -31,12 +37,16 @@ export default {
   components: {
     ButtonSelector,
     Checkbox,
+    LoadingGrid,
   },
 
   props: ['eventId'],
   data() {
     return {
       event: {},
+      loading: false,
+      isEditing: false,
+      result: {},
     };
   },
 
@@ -60,6 +70,25 @@ export default {
 
     closeModal() {
       this.$emit('close:modal');
+    },
+
+    async deleteEvent() {
+      const gapi = await this.$gapi.getGapiClient();
+
+      await gapi.client.calendar.events.delete({
+        calendarId: 'primary',
+        eventId: this.eventId,
+      });
+
+      emitter.emit('pushNotification', {
+        title: 'Deleted Event',
+        body: '',
+        level: 'ok',
+      });
+
+      this.$store.commit('clearCalendar');
+      await listUpcomingEvents(gapi);
+      this.closeModal();
     },
 
     async createEvent() {
@@ -151,6 +180,21 @@ export default {
         this.newEvent.end = dayjs().add(1, 'hour').format('hh:mma');
       }
     },
+    async getEvent() {
+      const gapi = await this.$gapi.getGapiClient();
+
+      const { result } = await gapi.client.calendar.events.get({
+        calendarId: 'primary',
+        eventId: this.eventId,
+      });
+
+      this.result = result;
+
+      if (result) {
+        this.event = result;
+        this.loading = false;
+      }
+    },
   },
   computed: {
     start() {
@@ -161,89 +205,31 @@ export default {
     },
   },
   async mounted() {
-    const gapi = await this.$gapi.getGapiClient();
-
-    const { result } = await gapi.client.calendar.events.get({
-      calendarId: 'primary',
-      eventId: this.eventId,
-    });
-
-    if (result) {
-      this.event = {
-        summary: result.summary,
-        description: result.description,
-        start: {
-          dateTime: dayjs(result.start.dateTime),
-        },
-        end: {
-          dateTime: dayjs(result.end.dateTime),
-        },
-      };
-    }
+    this.loading = true;
+    await this.getEvent();
+  },
+  watch: {
+    eventId: {
+      async handler() {
+        this.loading = true;
+        await this.getEvent();
+      },
+      deep: true,
+    },
   },
 };
 </script>
 
 <style lang="scss">
-    .form-group{
-        position: relative;
-
-      
-        label {
-            position: absolute;
-            left: 10px;
-            top: 5px;
-            color: var(--gray-300);
-            display: flex;
-            overflow: hidden;
-            white-space: nowrap;
-            width: 100%;
-        }
- 
-        input, textarea{
-            border: none;
-            border-bottom: 4px solid var(--gray-100);
-            border-radius:0;
-            padding: .75rem;
-            font-family: 'Roboto Condensed', sans-serif;
-            font-size: 1rem;
-            transition: border .13s ease;
-            width: 100%;
-            background-color: var(--gray-50);
-
-            &:focus{
-                outline: none;
-                border-bottom: 4px solid var(--red-300);
-            }
-
-            &:not(:placeholder-shown) + label {
-                display: none;
-            }
-        }
-
-        &__title{
-            input{
-                font-size: 1.2rem;
-            }
-
-            label{
-                margin-top:0.25rem;
-                font-size: 1.2rem;
-            }
-        }
-    }
-
-    .time-select{
-    }
-    .seperator{
-        align-self: center;
-        font-weight:bold;
-    }
-    .column{
-        display: flex;
-    }
-    h4{
-      margin-top:2rem;
-      margin-bottom:1rem;
-    }
+  .display {
+    border:none;
+  
+  }
+  .row {
+    display:flex;
+    flex-direction:row;
+  }
+  .event-view {
+    position: relative;
+  }
 </style>

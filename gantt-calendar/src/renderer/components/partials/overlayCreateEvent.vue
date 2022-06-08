@@ -73,6 +73,7 @@
 
 <script>
 import dayjs from 'dayjs';
+import emitter from 'tiny-emitter/instance';
 // eslint-disable-next-line no-unused-vars
 import timezone from 'dayjs/plugin/timezone';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -124,12 +125,14 @@ export default {
       }
     },
     updateStart(event) {
+      console.log(event.target.value);
       const val = this.cleanTimeInput(event);
-      this.newEvent.start = dayjs(`${this.newEvent.date} ${val}`, 'YYYY-MM-DD hh:mma').format('hh:mma');
+      this.newEvent.start = dayjs(`${dayjs(this.newEvent.date).format('YYYY-MM-DD')} ${val}`, 'YYYY-MM-DD hh:mma').format('hh:mma');
     },
 
-    updateEnd(val) {
-      this.newEvent.end = dayjs(`${this.newEvent.date} ${val.target.value}`, 'YYYY-MM-DD hh:mma').format('hh:mma');
+    updateEnd(event) {
+      const val = this.cleanTimeInput(event);
+      this.newEvent.end = dayjs(`${dayjs(this.newEvent.date).format('YYYY-MM-DD')} ${val}`, 'YYYY-MM-DD hh:mma').format('hh:mma');
     },
 
     closeModal() {
@@ -168,12 +171,17 @@ export default {
         },
       });
 
-      console.log(gEvent);
-
       const response = await gapi.client.calendar.events.insert({
         calendarId: 'primary',
         resource: JSON.parse(gEvent),
       });
+
+      emitter.emit('pushNotification', {
+        title: 'Event Created',
+        body: `Created ${event.eventType} starting ${event.date} at ${event.start}`,
+        level: 'ok',
+      });
+
 
       console.log(response);
 
@@ -214,9 +222,9 @@ export default {
     cleanTimeInput(event) {
       const input = event.target.value.replace(/\s/g, '');
 
-      // if (!input.includes('am') && !input.includes('pm')) {
-      //   return '12:00am';
-      // }
+      if (!input.includes('am') && !input.includes('pm')) {
+        return `${input}am`;
+      }
 
       return input;
     },

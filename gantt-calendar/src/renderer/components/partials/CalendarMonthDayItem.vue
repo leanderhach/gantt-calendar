@@ -11,7 +11,7 @@
       <template v-for="(event, key) in storedEvents">
         <div :class="['event', {'event__on-now': event.time && event.time.onNow === true}]"  :key="key" v-if="key < 2" @click="viewEvent(event.id)">
           <p class="event__title">{{ event.title }}</p>
-          <p v-if="event.time" class="event__time">{{ event.time.start }} - {{ event.time.end }} {{ event.time.duration }}</p>
+          <p v-if="event.time" class="event__time">{{ formatTime(event.time.start) }} - {{ formatTime(event.time.end) }} {{ event.time.duration }}</p>
           <p v-else class="event__time">All Day</p>
         </div>
       </template>
@@ -23,8 +23,11 @@
 <script>
 import dayjs from 'dayjs';
 import emitter from 'tiny-emitter/instance';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 import store from '../../store';
+
+dayjs.extend(customParseFormat);
 
 export default {
   name: 'CalendarMonthDayItem',
@@ -50,6 +53,9 @@ export default {
     },
     dateFormat(date) {
       return dayjs(date).format('YYYY-MM-DDTHH:mm:ssZ');
+    },
+    formatTime(time) {
+      return dayjs(time, 'HH:mma').format('hh:mma');
     },
   },
 

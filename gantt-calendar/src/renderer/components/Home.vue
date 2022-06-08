@@ -2,7 +2,7 @@
   <main>
     <div class="calendar">
       <div class="calendar__header">
-        <calendar-date-indicator :selectedDate="selectedDate"></calendar-date-indicator>
+        <calendar-date-indicator :selectedDate="selectedDate" v-on:change:date="selectDate"></calendar-date-indicator>
         <calendar-date-selector :selectedDate="selectedDate" :currentDate="today" v-on:dateSelected="selectDate"></calendar-date-selector>
         <create-event></create-event>
       </div>
@@ -18,6 +18,7 @@
       </div>
     </div>
     <multi-function-overlay></multi-function-overlay>
+    <notification-overlay></notification-overlay>
   </main>
 </template>
 
@@ -31,6 +32,7 @@ import CalendarWeekdays from '@/components/partials/CalendarWeekdays';
 import CalendarMonthDayItem from '@/components/partials/CalendarMonthDayItem';
 import CreateEvent from '@/components/createEvent';
 import MultiFunctionOverlay from '@/components/MultiFunctionOverlay';
+import NotificationOverlay from './NotificationOverlay.vue';
 
 dayjs.extend(weekday);
 dayjs.extend(weekOfYear);
@@ -43,6 +45,7 @@ export default {
     CalendarMonthDayItem,
     CreateEvent,
     MultiFunctionOverlay,
+    NotificationOverlay,
   },
   data() {
     return {
@@ -155,5 +158,6 @@ export default {
       flex-direction:row;
       align-items: center;
       height:fit-content;
+      padding-top:2rem;
     }
 </style>
